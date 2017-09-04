@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/user"
 	"path"
 
 	"errors"
 
 	flags "github.com/jessevdk/go-flags"
+	homedir "github.com/mitchellh/go-homedir"
 	wol "github.com/sabhiram/go-wol"
 )
 
@@ -142,13 +142,13 @@ func main() {
 	var args []string
 
 	// Detect the current user to figure out what their ~ is
-	usr, err := user.Current()
+	usrPath, err := homedir.Dir()
 	if err != nil {
 		panic("Unable to determine current user. Exiting...")
 	}
 
 	// Load the list of aliases from the file at DBPath
-	aliases, err := LoadAliases(path.Join(usr.HomeDir, DBPath))
+	aliases, err := LoadAliases(path.Join(usrPath, DBPath))
 	if err != nil {
 		fmt.Printf("Failed to open WOL DB: %v\n", err)
 		panic("Unable to load user aliases! Exiting...")
